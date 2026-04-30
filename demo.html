@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Content Uploader</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 20px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .logo h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .logo p {
+            color: #888;
+            font-size: 14px;
+        }
+        .card {
+            background: #161823;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary {
+            background: #fe2c55;
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #25f4ee;
+            color: #000;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        input[type="file"],
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #2b2b2b;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .hidden { display: none; }
+        .success {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .success h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .success p {
+            color: #888;
+        }
+        .video-preview {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: #2b2b2b;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .video-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .hashtag-input {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .hashtag {
+            background: #fe2c55;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+        }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+        }
+        .info-box {
+            background: #1a1a2e;
+            border-left: 3px solid #25f4ee;
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Login -->
+        <div id="screen-login" class="screen">
+            <div class="logo">
+                <h1>📤 TikTok Uploader</h1>
+                <p>Publish videos directly to TikTok</p>
+            </div>
+            <div class="card">
+                <h2>Connect Your Account</h2>
+                <p style="color: #888; margin-bottom: 16px; font-size: 14px;">
+                    Authenticate with TikTok to start uploading videos securely.
+                </p>
+                <a id="tiktok-auth-link" class="btn btn-primary" href="#">
+                    🔗 Connect TikTok Account
+                </a>
+            </div>
+            <div class="card" style="padding: 16px;">
+                <p style="font-size: 13px; color: #888;">
+                    🔒 Secure OAuth 2.0 authentication<br>
+                    We never store your TikTok password
+                </p>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="showScreen('screen-upload'); document.getElementById('user-info').textContent = 'Connected: @demo_user';" 
+                        style="background: none; border: 1px solid #333; color: #666; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    Skip to Upload Form (Demo)
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 2: Upload Form -->
+        <div id="screen-upload" class="screen hidden">
+            <div class="status-bar">
+                <div class="status-dot"></div>
+                <span id="user-info">Connected</span>
+            </div>
+            
+            <div class="card">
+                <h2>Upload Video</h2>
+                
+                <div class="form-group">
+                    <div class="video-preview" id="videoPreview">
+                        <span>📹 Select a video to preview</span>
+                    </div>
+                    <input type="file" id="videoFile" accept="video/*" onchange="previewVideo()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Caption</label>
+                    <textarea id="caption" placeholder="Describe your video..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Hashtags</label>
+                    <input type="text" id="hashtags" placeholder="Add hashtags (press Enter)" onkeypress="addHashtag(event)">
+                    <div class="hashtag-input" id="hashtagContainer"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Privacy</label>
+                    <select id="privacy">
+                        <option value="public">🌐 Public</option>
+                        <option value="friends">👥 Friends Only</option>
+                        <option value="private">🔒 Private</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="publishVideo()">
+                    🚀 Publish to TikTok
+                </button>
+            </div>
+            
+            <div class="info-box">
+                <strong>Demo Mode:</strong> For this demonstration, the upload will be simulated. In production, this connects to TikTok's Content Publishing API.
+            </div>
+        </div>
+
+        <!-- Screen 3: Success -->
+        <div id="screen-success" class="screen hidden">
+            <div class="card success">
+                <div class="success-icon">✅</div>
+                <h2>Published Successfully!</h2>
+                <p>Your video is now live on TikTok</p>
+                <br>
+                <button class="btn btn-secondary" onclick="showScreen('screen-upload')">
+                    📤 Upload Another Video
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TikTok OAuth Configuration
+        const CLIENT_KEY = 'sbawncckv1c74pf70h'; // Replace with your actual client key after approval
+        const REDIRECT_URI = 'https://developers.tiktok.com/sandbox/callback';
+        const SCOPE = 'user.info.basic,video.publish'; // Multiple scopes
+        
+        // PKCE Helper functions
+        function generateCodeVerifier() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return base64URLEncode(array);
+        }
+        
+        async function generateCodeChallenge(verifier) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(verifier);
+            const digest = await crypto.subtle.digest('SHA-256', data);
+            return base64URLEncode(new Uint8Array(digest));
+        }
+        
+        function base64URLEncode(str) {
+            return btoa(String.fromCharCode.apply(null, str))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+        }
+        
+        // Generate TikTok OAuth URL with PKCE
+        async function getTikTokAuthUrl() {
+            const state = Math.random().toString(36).substring(7);
+            const codeVerifier = generateCodeVerifier();
+            const codeChallenge = await generateCodeChallenge(codeVerifier);
+            
+            // Store code verifier for later
+            sessionStorage.setItem('code_verifier', codeVerifier);
+            sessionStorage.setItem('state', state);
+            
+            const params = new URLSearchParams({
+                client_key: CLIENT_KEY,
+                response_type: 'code',
+                scope: SCOPE,
+                redirect_uri: REDIRECT_URI,
+                state: state,
+                code_challenge: codeChallenge,
+                code_challenge_method: 'S256'
+            });
+            return `https://www.tiktok.com/v2/auth/authorize/?${params.toString()}`;
+        }
+        
+        // Check if we have an auth code in URL (after redirect back from TikTok)
+        async function checkAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const storedState = sessionStorage.getItem('state');
+            
+            if (code) {
+                // Verify state to prevent CSRF
+                if (state !== storedState) {
+                    console.error('State mismatch');
+                    return;
+                }
+                
+                // In a real app, you would exchange the code for a token here
+                // For demo purposes, we just show the connected state
+                showScreen('screen-upload');
+                document.getElementById('user-info').textContent = 'Connected: @user';
+                
+                // Clear the URL parameters
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        // Set up auth link
+        (async function() {
+            const authUrl = await getTikTokAuthUrl();
+            document.getElementById('tiktok-auth-link').href = authUrl;
+        })();
+        
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+        
+        function previewVideo() {
+            const file = document.getElementById('videoFile').files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById('videoPreview').innerHTML = 
+                    `<video src="${url}" controls></video>`;
+            }
+        }
+        
+        function addHashtag(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const input = document.getElementById('hashtags');
+                const tag = input.value.trim();
+                if (tag) {
+                    const container = document.getElementById('hashtagContainer');
+                    const tagEl = document.createElement('span');
+                    tagEl.className = 'hashtag';
+                    tagEl.textContent = '#' + tag.replace(/^#/, '');
+                    container.appendChild(tagEl);
+                    input.value = '';
+                }
+            }
+        }
+        
+        function publishVideo() {
+            // In real app: make API call to upload
+            // For demo: show success after short delay
+            const btn = document.querySelector('#screen-upload .btn-primary');
+            btn.textContent = '⏳ Uploading...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                showScreen('screen-success');
+                btn.textContent = '🚀 Publish to TikTok';
+                btn.disabled = false;
+            }, 2000);
+        }
+        
+        // Check for auth callback on page load
+        checkAuthCallback();
+    </script>
+</body>
+</html>
