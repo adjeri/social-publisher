@@ -1,2 +1,2 @@
-# tiktok-app-pages
-Terms of Service and Privacy Policy for TikTok Content Uploader
+# PublishFlow
+Terms of Service and Privacy Policy pages for PublishFlow - TikTok Content Publishing App
