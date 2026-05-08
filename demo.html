@@ -169,8 +169,8 @@
         <!-- Screen 1: Login -->
         <div id="screen-login" class="screen">
             <div class="logo">
-                <h1>📤 TikTok Uploader</h1>
-                <p>Publish videos directly to TikTok</p>
+                <h1>📤 PublishFlow</h1>
+                <p>Post videos directly to your TikTok account</p>
             </div>
             <div class="card">
                 <h2>Connect Your Account</h2>
@@ -260,7 +260,7 @@
         // TikTok OAuth Configuration
         const CLIENT_KEY = 'aw5h0f6lw3d92lu5'; // Production client key
         const REDIRECT_URI = 'https://adjeri.github.io/publishflow/callback.html';
-        const SCOPE = 'user.info.basic,video.publish'; // Multiple scopes
+        const SCOPE = 'video.publish'; // Only publishing scope
         
         // PKCE Helper functions
         function generateCodeVerifier() {

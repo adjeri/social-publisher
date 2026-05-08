@@ -3,119 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PublishFlow</title>
+    <title>PublishFlow — Schedule & Post to TikTok</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            max-width: 700px;
-            margin: 60px auto;
-            padding: 0 20px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
             line-height: 1.6;
-            color: #1a1a1a;
-            background: #fafafa;
         }
-        .app-header {
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Nav */
+        nav {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 32px;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #1a1a1a;
         }
-        .app-header img {
-            width: 64px;
-            height: 64px;
-            border-radius: 12px;
-        }
-        .app-header h1 {
-            font-size: 2rem;
-            margin: 0;
-        }
-        .tagline {
-            color: #666;
-            font-size: 1.1rem;
-            margin-top: -24px;
-            margin-bottom: 32px;
-        }
-        .card {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 24px 0;
-        }
-        .card h2 {
-            margin-top: 0;
-        }
-        a {
-            color: #2563eb;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .links {
+        nav .logo {
             display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-top: 32px;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
         }
-        .links a {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #2563eb;
-            color: #fff;
+        nav .logo img {
+            width: 36px;
+            height: 36px;
             border-radius: 8px;
-            font-weight: 500;
         }
-        .links a:hover {
-            background: #1d4ed8;
-            text-decoration: none;
+        nav .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
         }
-        footer {
-            margin-top: 48px;
-            font-size: 0.875rem;
+        nav .nav-links a {
             color: #888;
-            border-top: 1px solid #e0e0e0;
-            padding-top: 16px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        nav .nav-links a:hover { color: #fff; }
+        .btn-ghost {
+            background: none;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-ghost:hover { background: #1a1a1a; }
+        .btn-primary {
+            background: #fe2c55;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: #e6264b; }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #888;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin: 60px 0;
+        }
+        .feature-card {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+        .feature-card:hover { border-color: #333; }
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #888;
+        }
+
+        /* How it works */
+        .steps {
+            display: flex;
+            gap: 24px;
+            margin: 40px 0 60px;
+        }
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 32px 20px;
+            background: #111;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+        }
+        .step .number {
+            width: 40px;
+            height: 40px;
+            background: #fe2c55;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 16px;
+        }
+        .step h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .step p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid #1a1a1a;
+        }
+        .cta h2 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        .cta p {
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        /* Section titles */
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .section-sub {
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #1a1a1a;
+            padding: 32px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        footer .links {
+            display: flex;
+            gap: 20px;
+        }
+        footer .links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        footer .links a:hover { color: #fff; }
+        footer .copy {
+            font-size: 13px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 32px; }
+            .steps { flex-direction: column; }
+            nav .nav-links a:not(.btn-ghost) { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="app-header">
-        <img src="app-icon.jpg" alt="PublishFlow">
-        <h1>PublishFlow</h1>
-    </div>
-    <p class="tagline">An automated content publishing tool for TikTok creators</p>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <img src="app-icon.jpg" alt="PublishFlow">
+                <span>PublishFlow</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="privacy-policy.html">Privacy</a>
+                <a href="terms-of-service.html">Terms</a>
+                <a href="demo.html" class="btn-ghost">Open App</a>
+            </div>
+        </nav>
 
-    <div class="card">
-        <h2>About</h2>
-        <p>
-            <strong>PublishFlow</strong> helps creators schedule and publish video content 
-            directly to their TikTok accounts through TikTok's official Content Publishing API.
-        </p>
-        <p>
-            Users connect their TikTok account via OAuth, upload videos with captions and hashtags, 
-            and publish directly to their TikTok profile — all from a simple interface.
-        </p>
-    </div>
+        <section class="hero">
+            <h1>Publish to TikTok.<br>On your schedule.</h1>
+            <p>Schedule and post video content directly to your TikTok account using the official Content Publishing API. No manual uploading needed.</p>
+            <a href="demo.html" class="btn-primary">🚀 Open PublishFlow</a>
+        </section>
 
-    <div class="card">
-        <h2>How It Works</h2>
-        <ol>
-            <li><strong>Connect</strong> — Sign in with your TikTok account via secure OAuth 2.0</li>
-            <li><strong>Upload</strong> — Select a video file and add your caption, hashtags, and settings</li>
-            <li><strong>Publish</strong> — Post directly to your TikTok profile with one click</li>
-        </ol>
-    </div>
+        <h2 class="section-title" id="features">Everything you need</h2>
+        <p class="section-sub">A simple tool for creators who want to publish consistently</p>
 
-    <div class="links">
-        <a href="terms-of-service.html">Terms of Service</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-    </div>
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">🔗</div>
+                <h3>OAuth 2.0 Connection</h3>
+                <p>Securely connect your TikTok account with one click. Your credentials are never stored.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎬</div>
+                <h3>Video Upload</h3>
+                <p>Upload videos directly from your device. Preview before posting.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📝</div>
+                <h3>Captions & Hashtags</h3>
+                <p>Add captions, hashtags, and choose privacy settings for each post.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📅</div>
+                <h3>Schedule Posts</h3>
+                <p>Plan your content calendar and publish at the best times for your audience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🔒</div>
+                <h3>Privacy Controls</h3>
+                <p>Choose between Public, Friends Only, or Private for each video.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3>Post History</h3>
+                <p>Track your published content and see what's performing best.</p>
+            </div>
+        </div>
 
-    <footer>
-        <p>&copy; 2026 PublishFlow. This application uses TikTok's official Content Publishing API.</p>
-    </footer>
+        <h2 class="section-title" id="how-it-works">How it works</h2>
+        <p class="section-sub">Three simple steps to start publishing</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="number">1</div>
+                <h3>Connect</h3>
+                <p>Authorize PublishFlow to post to your TikTok account via secure OAuth 2.0</p>
+            </div>
+            <div class="step">
+                <div class="number">2</div>
+                <h3>Create</h3>
+                <p>Select your video, write your caption, add hashtags, and set privacy</p>
+            </div>
+            <div class="step">
+                <div class="number">3</div>
+                <h3>Publish</h3>
+                <p>Post directly to TikTok with one click. Your video goes live instantly</p>
+            </div>
+        </div>
+
+        <section class="cta">
+            <h2>Ready to start publishing?</h2>
+            <p>Connect your TikTok account and publish your first video in minutes.</p>
+            <a href="demo.html" class="btn-primary">🚀 Open PublishFlow</a>
+        </section>
+
+        <footer>
+            <div class="links">
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-service.html">Terms of Service</a>
+                <a href="demo.html">Demo App</a>
+            </div>
+            <span class="copy">&copy; 2026 PublishFlow. Built with TikTok Content Publishing API.</span>
+        </footer>
+    </div>
 </body>
 </html>
